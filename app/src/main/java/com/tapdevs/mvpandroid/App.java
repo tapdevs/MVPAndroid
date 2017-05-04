@@ -21,7 +21,6 @@ import timber.log.Timber;
 public class App extends Application{
 
     private NetComponent mNetComponent;
-//    ApplicationComponent mApplicationComponent;
 
 
 

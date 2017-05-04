@@ -2,6 +2,7 @@ package com.tapdevs.mvpandroid.abstractions.presenters;
 
 import com.tapdevs.mvpandroid.models.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.RealmResults;
@@ -12,7 +13,7 @@ import io.realm.RealmResults;
 
 public interface UserInterface {
     interface View {
-        void showPosts(RealmResults<User> posts);
+        void showPosts(List<User> posts);
 
         void showError(Throwable message);
 

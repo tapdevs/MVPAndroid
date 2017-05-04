@@ -32,6 +32,7 @@ public class DataManager {
         injectDependencies(context);
     }
 
+    @Inject
     public DataManager(ApiCalls apiCalls,
                        Scheduler subscribeScheduler) {
         this.apiCalls = apiCalls;

@@ -11,7 +11,6 @@ import retrofit2.http.GET;
 /**
  * Created by  Jan Shair on 31/01/2017.
  */
-
 public interface ApiCalls {
 
     @GET("users")

@@ -19,6 +19,7 @@ public class UsersPresenter implements UserInterface.Presenter {
     private UserInterface.View userInterfaceView;
     private DataManager mDataManager;
     private CompositeDisposable mCompositeDisposable;
+
     @Inject
     public UsersPresenter(CompositeDisposable compositeDisposable, UserInterface.View userInterfaceView, DataManager dataManager) {
         this.mCompositeDisposable=compositeDisposable;
@@ -32,6 +33,6 @@ public class UsersPresenter implements UserInterface.Presenter {
         mCompositeDisposable.add(mDataManager.getUserList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(mDataManager.getScheduler())
-                .subscribe(userList -> userInterfaceView.showPosts((RealmResults<User>) userList), throwable -> userInterfaceView.showError(throwable),() -> userInterfaceView.showComplete()));
+                .subscribe(userList -> userInterfaceView.showPosts(userList), throwable -> userInterfaceView.showError(throwable),() -> userInterfaceView.showComplete()));
     }
 }

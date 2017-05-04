@@ -11,11 +11,13 @@ import com.tapdevs.mvpandroid.data.remote.ApiCalls;
 import com.tapdevs.mvpandroid.data.remote.RetrofitHelper;
 import com.tapdevs.mvpandroid.utils.SharedPreferenceUtil;
 
+
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import io.reactivex.Scheduler;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
@@ -44,12 +46,6 @@ public class NetModule {
 
     @Provides
     @Singleton
-        // Application reference must come from ApplicationModule.class
-    RealmDataManager providesRealm(Application application) {
-        return new RealmDataManager();
-    }
-    @Provides
-    @Singleton
     Cache provideOkHttpCache(Application application) {
         int cacheSize = 10 * 1024 * 1024; // 10 MiB
         Cache cache = new Cache(application.getCacheDir(), cacheSize);
@@ -70,22 +66,4 @@ public class NetModule {
         return new OkHttpClient.Builder().cache(cache).build();
     }
 
-    @Provides
-    @Singleton
-    ApiCalls provideApiInterface(Application application) {
-
-        return new RetrofitHelper().newApiCalls();
-    }
-
-    @Provides
-    @Singleton
-    DataManager provideDataManager(Application application){
-        return new DataManager(provideApiInterface(application), provideSubscribeScheduler());
-    }
-
-    @Provides
-    @Singleton
-    Scheduler provideSubscribeScheduler() {
-        return Schedulers.io();
-    }
 }

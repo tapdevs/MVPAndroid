@@ -2,6 +2,8 @@ package com.tapdevs.mvpandroid.injections.modules;
 
 import android.app.Application;
 
+import com.tapdevs.mvpandroid.injections.scope.PerDataManager;
+
 import javax.inject.Singleton;
 
 import dagger.Module;

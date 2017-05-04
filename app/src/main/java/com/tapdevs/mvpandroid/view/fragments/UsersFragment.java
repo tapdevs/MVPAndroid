@@ -19,8 +19,10 @@ import com.tapdevs.mvpandroid.abstractions.presenters.UserInterface;
 import com.tapdevs.mvpandroid.abstractions.views.BaseFragment;
 import com.tapdevs.mvpandroid.data.DataManager;
 import com.tapdevs.mvpandroid.data.RealmDataManager;
+import com.tapdevs.mvpandroid.injections.component.DaggerUserScreenComponent;
+import com.tapdevs.mvpandroid.injections.modules.UserScreenModule;
 import com.tapdevs.mvpandroid.models.User;
-import com.tapdevs.mvpandroid.utils.AppConstants;
+import com.tapdevs.mvpandroid.presenter.UsersPresenter;
 import com.tapdevs.mvpandroid.utils.DialogFactory;
 import com.tapdevs.mvpandroid.utils.NetworkUtils;
 import com.tapdevs.mvpandroid.view.activities.MainActivity;
@@ -33,7 +35,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.realm.RealmResults;
 import timber.log.Timber;
@@ -41,16 +42,13 @@ import timber.log.Timber;
 import static com.tapdevs.mvpandroid.R.layout.fragment_users;
 
 
-public class UsersFragment  extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener,UserInterface.View {
+public class UsersFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener,UserInterface.View {
 
 
     private MainActivity context;
 
     @BindView(R.id.recycler_view)
     RecyclerView mRecyclerView;
-
-
-    private CompositeDisposable mCompositeDisposable;
 
     private UserAdapter mAdapter;
 
@@ -73,11 +71,17 @@ public class UsersFragment  extends BaseFragment implements SwipeRefreshLayout.O
     TextView errorView;
 
 
-    @Inject
-    DataManager mDataManager;
+
     @Inject
     RealmDataManager realm;
 
+    @Inject
+    UsersPresenter userPresenter;
+
+    @Inject CompositeDisposable mCompositeDisposable;
+
+    @Inject
+    DataManager mDataManager;
 
 
     @Override
@@ -106,6 +110,7 @@ public class UsersFragment  extends BaseFragment implements SwipeRefreshLayout.O
         setupToolbar();
         setupRecyclerView();
         loadUsersIfNetworkConnected();
+        userPresenter.loadPost();
     }
 
     @Override
@@ -115,7 +120,11 @@ public class UsersFragment  extends BaseFragment implements SwipeRefreshLayout.O
 
     @Override
     protected void injectDependencies() {
-        App.get(getActivity()).getNetComponent().inject(this);
+//        App.get(getActivity()).getNetComponent().inject(context);
+        DaggerUserScreenComponent.builder()
+                .netComponent(App.get(getContext()).getNetComponent())
+                .userScreenModule(new UserScreenModule(this))
+                .build().inject(this);
     }
 
     @Override
@@ -190,7 +199,7 @@ public class UsersFragment  extends BaseFragment implements SwipeRefreshLayout.O
         }
     }
 
-    private void handleResponse(RealmResults<User> allUsers) {
+    private void handleResponse(List<User> allUsers) {
         hideLoadingViews();
         users = new ArrayList<>(allUsers);
         mAdapter = new UserAdapter(this,users);
@@ -223,16 +232,16 @@ public class UsersFragment  extends BaseFragment implements SwipeRefreshLayout.O
 
 
     public void browseThisUser(User user) {
-        BrowseProfileFragment browseProfileFragment=new BrowseProfileFragment();
-        Bundle args= new Bundle();
-        args.putParcelable(AppConstants.USER_OBJECT_PARCELABLE_KEY,user);
-        browseProfileFragment.setArguments(args);
-
-        context.addFragment(browseProfileFragment);
+//        BrowseProfileFragment browseProfileFragment=new BrowseProfileFragment();
+//        Bundle args= new Bundle();
+//        args.putParcelable(AppConstants.USER_OBJECT_PARCELABLE_KEY,user);
+//        browseProfileFragment.setArguments(args);
+//
+//        context.addFragment(browseProfileFragment);
     }
 
     @Override
-    public void showPosts(RealmResults<User> userList) {
+    public void showPosts(List<User> userList) {
         showHideOfflineLayout(false);
         hideLoadingViews();
         handleResponse(userList);
