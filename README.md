@@ -1,4 +1,4 @@
-# MVVM
+# MVP
 
 This is the base project using MVP pattern to quick start development in android . Libraries used in this project are
 
